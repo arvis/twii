@@ -1,0 +1,16 @@
+<h1>Tweet about <%= @search_data %></h1>
+
+  
+  <h3> Enter search data: </h3>
+  <form action="index" method="get">
+  First name: <input type="text" name="search" value="<%= @search_data %>"><br>
+  <input type="submit" value="Submit">
+  </form>
+
+
+  <ul>
+    <% @tweets.each do |tweet| %>
+      <li> <%= tweet.user.screen_name %>,  <%= tweet.text %></li>
+    <% end %>
+  </ul>
+
