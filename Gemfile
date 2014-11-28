@@ -27,6 +27,7 @@ gem 'twitter'
 gem 'slim'
 gem 'slim-rails'
 
+#gem 'debugger'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

@@ -16,14 +16,25 @@ class TwController < ApplicationController
     end
 
 
+    @tweets =[]
+
     if params[:search]
       search_data=params[:search]
       @search_data=search_data
-      @tweets =client.search(search_data, :result_type => "recent").take(nr_of_tweets.to_i)
+      tweets_local =client.search(search_data, :result_type => "recent").take(nr_of_tweets.to_i)
+
+      tweets_local.each do |tweet|
+      #  puts (vitamin.length)
+        if !tweet.media.empty?
+          @tweets.push(tweet.media[0].media_uri)
+        end 
+      end
     else
       @search_data=""
-      @tweets =[]
     end
+
+    #puts(@tweets[3].media[0].media_uri)
+
 
   end
 end
