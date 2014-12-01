@@ -1,6 +1,7 @@
 class TwController < ApplicationController
-  def index
 
+
+  def index
 
     client = Twitter::REST::Client.new do |config|
       config.consumer_key    = "Noz3qAnLXNChSJf6WNQzq1JGw"
@@ -15,18 +16,45 @@ class TwController < ApplicationController
       nr_of_tweets=params[:nr_of_tweets]
     end
 
+    since_processed=nil
 
     @tweets =[]
 
     if params[:search]
       search_data=params[:search]
       @search_data=search_data
-      tweets_local =client.search(search_data, :result_type => "recent").take(nr_of_tweets.to_i)
+
+      if params[:tweet_type]=="new"
+        tweets_local =client.search(search_data, :result_type => "recent", :since_id => session[:since_id]).take(nr_of_tweets.to_i)
+      elsif params[:tweet_type]=="old"
+        tweets_local =client.search(search_data, :result_type => "recent", :max_id => session[:max_id]).take(nr_of_tweets.to_i)
+      else
+        tweets_local =client.search(search_data, :result_type => "recent").take(nr_of_tweets.to_i)
+      end
+
+      p params[:tweet_type]
 
       tweets_local.each do |tweet|
-      #  puts (vitamin.length)
         if !tweet.media.empty?
           @tweets.push(tweet.media[0].media_uri)
+
+
+          if params[:tweet_type]=="new"
+
+            unless since_processed
+              session[:since_id]=tweet.id
+              since_processed=true
+            end
+
+          elsif params[:tweet_type]=="old"
+            session[:max_id]=tweet.id
+          elsif params[:tweet_type]=="first"
+            unless since_processed
+              session[:since_id]=tweet.id
+              since_processed=true
+            end
+          end
+
         end 
       end
     else
