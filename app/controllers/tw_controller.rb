@@ -65,4 +65,46 @@ class TwController < ApplicationController
 
 
   end
+
+  def latest
+
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key    = "Noz3qAnLXNChSJf6WNQzq1JGw"
+      config.consumer_secret = "Rn0VLVXAlgmWl1ov4XwomKhuAKcPbgTKs2s6MYIR28m8xVMo7O"
+    end
+
+    since_processed=nil
+
+
+    @tweets =[]
+    search_data=params[:search]
+
+    tweets_local =client.search(search_data, :result_type => "recent").take(20)
+
+    <<-DOC
+    if session[:since_id]
+      tweets_local =client.search(search_data, :result_type => "recent", :since_id => session[:since_id]).take(20)
+    else
+      tweets_local =client.search(search_data, :result_type => "recent").take(nr_of_tweets.to_i)
+    end
+    DOC
+
+    tweets_local.each do |tweet|
+      if !tweet.media.empty?
+        @tweets.push(tweet.media[0].media_uri)
+
+        unless since_processed
+          session[:since_id]=tweet.id
+          since_processed=true
+        end
+      end
+
+    end
+
+    render json: @tweets
+  end
+
+  def earlier
+  end
+
 end
