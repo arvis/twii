@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'tw/index'
+  get 'tw/my'
 
   get 'tw/latest'
   get 'tw/earlier'
