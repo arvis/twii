@@ -69,6 +69,7 @@ class TwController < ApplicationController
 
   def my
     @tweets=[]
+    @nr_of_tweets=20
 
   end
 
@@ -106,18 +107,27 @@ class TwController < ApplicationController
 
   def latest
 
-    since_processed=nil
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key    = "Noz3qAnLXNChSJf6WNQzq1JGw"
+      config.consumer_secret = "Rn0VLVXAlgmWl1ov4XwomKhuAKcPbgTKs2s6MYIR28m8xVMo7O"
+    end
 
+    since_processed=nil
     @tweets =[]
+
+    unless params[:search]
+      render json: @tweets
+    end
+
     search_data=params[:search]
 
     #tweets_local =client.search(search_data, :result_type => "recent").take(20)
     #nr_of_tweets.to_i
 
     if session[:since_id]
-      tweets_local =@client.search(search_data, :result_type => "recent", :since_id => session[:since_id]).take(20)
+      tweets_local =client.search(search_data, :result_type => "recent", :since_id => session[:since_id]).take(20)
     else
-      tweets_local =@client.search(search_data, :result_type => "recent").take(20)
+      tweets_local =client.search(search_data, :result_type => "recent").take(20)
     end
 
     @tweets=filter_tweets(tweets_local,"first")
@@ -127,7 +137,17 @@ class TwController < ApplicationController
 
   def earlier
 
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key    = "Noz3qAnLXNChSJf6WNQzq1JGw"
+      config.consumer_secret = "Rn0VLVXAlgmWl1ov4XwomKhuAKcPbgTKs2s6MYIR28m8xVMo7O"
+    end
+
+
     since_processed=nil
+
+    unless params[:search]
+      render json: @tweets
+    end
 
     @tweets =[]
     search_data=params[:search]
@@ -138,7 +158,7 @@ class TwController < ApplicationController
     if session[:max_id]
       tweets_local =client.search(search_data, :result_type => "recent", :max_id => session[:max_id]).take(20)
     else
-      tweets_local =@client.search(search_data, :result_type => "recent").take(20)
+      tweets_local =client.search(search_data, :result_type => "recent").take(20)
     end
 
     @tweets=filter_tweets(tweets_local,"old")

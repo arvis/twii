@@ -1,29 +1,23 @@
+script src="/data.js"
 div class="container"
   h2 index example
-  form class="form-horizontal" role="form" action="index" method="get"
+  form class="form-horizontal" role="form" action="" method="get"
     div class="form-group"
       label for="search" class="col-sm-2 control-label" Seach
       div class="col-sm-10"
-        input type="text" id="search" class="form-control" name="search" value=@search_data
+        input type="text" id="search_data" class="form-control" name="search" value=@search_data
 
     div class="form-group"
-      label for="nr_of_tweets" class="col-sm-2 control-label" Seach
+      label for="nr_of_tweets" class="col-sm-2 control-label" Nr of tweets
       div class="col-sm-10"
         input type="text" id="nr_of_tweets" class="form-control" name="nr_of_tweets" value=@nr_of_tweets
 
-    div class="form-group"
-      label for="tweet_type" class="col-sm-2 control-label" Tweet type
-      div class="col-sm-10"
-        select id="tweet_type" class="form-control" name="tweet_type"
-          option value="first" First time
-          option value="old" older records
-          option value="new" newest records
+  div class="form-group"
+    div class="col-sm-offset-2 col-sm-10"
+      button id="newer_pics" class="btn btn-success" Fresh pics
+      button id="older_pics" class="btn btn-success" Older pics
 
-
-    div class="form-group"
-      div class="col-sm-offset-2 col-sm-10"
-        button type="submit" class="btn btn-success" Search
-
+  div id="tweet_data" 
 
   - if @tweets.empty?
     no data
@@ -31,6 +25,7 @@ div class="container"
     ul class="list-group"
       - for tw in @tweets
           img src = tw class="img-responsive"
+
 
 
 
